@@ -1,38 +1,29 @@
 import axios from "axios";
 
-// PUBLIC instance (no cookies)
+// 🔹 Public API (no cookies)
 const API = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
-  headers: {
-    "Content-Type": "application/json",
-  },
+  headers: { "Content-Type": "application/json" }
 });
 
-// PROTECTED instance (sends cookies)
+// 🔹 Protected API (requires login)
 const authAPI = axios.create({
   baseURL: import.meta.env.VITE_API_URL,
-  withCredentials: true, // Only protected routes use this
-  headers: {
-    "Content-Type": "application/json",
-  },
+  withCredentials: true,
+  headers: { "Content-Type": "application/json" }
 });
 
-/* ============================
-   AUTH ROUTES
-============================ */
-
-// Register & Login are PUBLIC — no cookies yet
+// ===============================
+// 🔐 AUTH ROUTES
+// ===============================
 export const registerUser = (data) => API.post("/auth/register", data);
-export const loginUser = (data) => API.post("/auth/login", data);
-
-// Logout & /auth/me are PROTECTED — need cookies
+export const loginUser = (data) => authAPI.post("/auth/login", data);
 export const logoutUser = () => authAPI.post("/auth/logout");
 export const getMe = () => authAPI.get("/auth/me");
 
-/* ============================
-   PRODUCTS (PUBLIC)
-============================ */
-
+// ===============================
+// 🛍 PUBLIC PRODUCT ROUTES
+// ===============================
 export const getProducts = (params) =>
   API.get("/products", { params });
 
@@ -42,10 +33,9 @@ export const getProductById = (id) =>
 export const getCategories = () =>
   API.get("/products/categories");
 
-/* ============================
-   CART (PROTECTED)
-============================ */
-
+// ===============================
+// 🛒 PROTECTED CART
+// ===============================
 export const addToCart = (data) =>
   authAPI.post("/cart/add", data);
 
@@ -61,10 +51,9 @@ export const removeFromCart = (data) =>
 export const clearCart = () =>
   authAPI.delete("/cart/clear");
 
-/* ============================
-   ORDERS (PROTECTED)
-============================ */
-
+// ===============================
+// 📦 PROTECTED ORDERS
+// ===============================
 export const createOrder = (data) =>
   authAPI.post("/orders", data);
 

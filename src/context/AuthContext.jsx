@@ -1,5 +1,5 @@
-import React, { createContext, useState, useEffect } from 'react';
-import { getMe } from '../services/api';
+import React, { createContext, useState, useEffect } from "react";
+import { getMe } from "../services/api";
 
 export const AuthContext = createContext();
 
@@ -10,13 +10,19 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const checkAuth = async () => {
+      // 👉 IMPORTANT: Only check auth if cookie exists
+      if (!document.cookie.includes("token")) {
+        setLoading(false);
+        return;
+      }
+
       try {
         const response = await getMe();
         setUser(response.data.user);
         setIsLoggedIn(true);
       } catch (error) {
-        setIsLoggedIn(false);
         setUser(null);
+        setIsLoggedIn(false);
       } finally {
         setLoading(false);
       }
@@ -26,7 +32,9 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, isLoggedIn, loading, setUser, setIsLoggedIn }}>
+    <AuthContext.Provider
+      value={{ user, isLoggedIn, loading, setUser, setIsLoggedIn }}
+    >
       {children}
     </AuthContext.Provider>
   );
