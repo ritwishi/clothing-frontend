@@ -1,8 +1,8 @@
 import axios from 'axios';
 
 const API = axios.create({
-  baseURL: 'http://localhost:5000/api', // Use full URL in development
-  withCredentials: true, // CRITICAL for sending cookies
+  baseURL: import.meta.env.VITE_API_URL, // FIXED
+  withCredentials: true,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -10,12 +10,8 @@ const API = axios.create({
 
 // Add request interceptor
 API.interceptors.request.use(
-  (config) => {
-    return config;
-  },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (config) => config,
+  (error) => Promise.reject(error)
 );
 
 // Add response interceptor
