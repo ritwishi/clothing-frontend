@@ -10,13 +10,8 @@ export const AuthProvider = ({ children }) => {
 
   useEffect(() => {
     const checkAuth = async () => {
-      // 👉 IMPORTANT: Only check auth if cookie exists
-      if (!document.cookie.includes("token")) {
-        setLoading(false);
-        return;
-      }
-
       try {
+        // Always try to get user — browser will include jwt cookie automatically
         const response = await getMe();
         setUser(response.data.user);
         setIsLoggedIn(true);

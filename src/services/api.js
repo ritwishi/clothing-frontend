@@ -1,66 +1,72 @@
 import axios from "axios";
 
-// 🔹 Public API (no cookies)
-const API = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
-  headers: { "Content-Type": "application/json" }
-});
+// Base URL from Vite environment variable
+const BASE_URL = import.meta.env.VITE_API_URL || "https://clothing-backend-hxe9.onrender.com";
 
-// 🔹 Protected API (requires login)
-const authAPI = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
-  withCredentials: true,
-  headers: { "Content-Type": "application/json" }
+// Create axios instance
+const api = axios.create({
+  baseURL: BASE_URL + "/api",
+  withCredentials: true, // VERY IMPORTANT FOR JWT COOKIE
+  headers: {
+    "Content-Type": "application/json",
+  },
 });
 
 // ===============================
 // 🔐 AUTH ROUTES
 // ===============================
-export const registerUser = (data) => API.post("/auth/register", data);
-export const loginUser = (data) => authAPI.post("/auth/login", data);
-export const logoutUser = () => authAPI.post("/auth/logout");
-export const getMe = () => authAPI.get("/auth/me");
+export const registerUser = (data) =>
+  api.post("/auth/register", data);
+
+export const loginUser = (data) =>
+  api.post("/auth/login", data);
+
+export const logoutUser = () =>
+  api.post("/auth/logout");
+
+export const getMe = () =>
+  api.get("/auth/me");
 
 // ===============================
-// 🛍 PUBLIC PRODUCT ROUTES
+// 🛍 PRODUCTS (PUBLIC)
 // ===============================
 export const getProducts = (params) =>
-  API.get("/products", { params });
+  api.get("/products", { params });
 
 export const getProductById = (id) =>
-  API.get(`/products/${id}`);
+  api.get(`/products/${id}`);
 
 export const getCategories = () =>
-  API.get("/products/categories");
+  api.get("/products/categories");
 
 // ===============================
-// 🛒 PROTECTED CART
+// 🛒 CART (PROTECTED)
 // ===============================
 export const addToCart = (data) =>
-  authAPI.post("/cart/add", data);
+  api.post("/cart/add", data);
 
 export const getCart = () =>
-  authAPI.get("/cart");
+  api.get("/cart");
 
 export const updateCartItem = (data) =>
-  authAPI.put("/cart/update", data);
+  api.put("/cart/update", data);
 
 export const removeFromCart = (data) =>
-  authAPI.delete("/cart/remove", { data });
+  api.delete("/cart/remove", { data });
 
 export const clearCart = () =>
-  authAPI.delete("/cart/clear");
+  api.delete("/cart/clear");
 
 // ===============================
-// 📦 PROTECTED ORDERS
+// 📦 ORDERS (PROTECTED)
 // ===============================
 export const createOrder = (data) =>
-  authAPI.post("/orders", data);
+  api.post("/orders", data);
 
 export const getOrderById = (id) =>
-  authAPI.get(`/orders/${id}`);
+  api.get(`/orders/${id}`);
 
 export const getMyOrders = () =>
-  authAPI.get("/orders/my-orders");
+  api.get("/orders/my-orders");
 
-export default API;
+export default api;
