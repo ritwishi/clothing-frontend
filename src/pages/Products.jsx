@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from 'react';
-import { getProducts, getCategories } from '../services/api';
-import ProductCard from '../components/ProductCard';
-import Filters from '../components/Filters';
-import '../styles/Products.css';
+import React, { useState, useEffect } from "react";
+import { getProducts, getCategories } from "../services/api";
+import ProductCard from "../components/ProductCard";
+import Filters from "../components/Filters";
+import "../styles/Products.css";
 
 const Products = () => {
   const [products, setProducts] = useState([]);
@@ -10,12 +10,13 @@ const Products = () => {
   const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+
   const [filters, setFilters] = useState({
-    search: '',
-    category: 'All',
-    size: '',
-    minPrice: '',
-    maxPrice: '',
+    search: "",
+    category: "All",
+    size: "",
+    minPrice: "",
+    maxPrice: "",
   });
 
   useEffect(() => {
@@ -31,24 +32,39 @@ const Products = () => {
       const response = await getCategories();
       setCategories(response.data.categories);
     } catch (error) {
-      console.error('Error fetching categories:', error);
+      console.error("Error fetching categories:", error);
     }
   };
 
   const fetchProducts = async () => {
     setLoading(true);
     try {
+      // Build clean filters — DO NOT send empty or "All"
+      const cleanFilters = {};
+
+      if (filters.search.trim() !== "") cleanFilters.search = filters.search;
+
+      if (filters.category !== "All" && filters.category !== "")
+        cleanFilters.category = filters.category;
+
+      if (filters.size !== "") cleanFilters.size = filters.size;
+
+      if (filters.minPrice !== "") cleanFilters.minPrice = filters.minPrice;
+
+      if (filters.maxPrice !== "") cleanFilters.maxPrice = filters.maxPrice;
+
       const params = {
         page,
         limit: 12,
-        ...filters,
+        ...cleanFilters,
       };
 
       const response = await getProducts(params);
+
       setProducts(response.data.products);
       setTotalPages(response.data.pages);
     } catch (error) {
-      console.error('Error fetching products:', error);
+      console.error("Error fetching products:", error);
     } finally {
       setLoading(false);
     }
@@ -92,9 +108,11 @@ const Products = () => {
                   >
                     Previous
                   </button>
+
                   <span className="page-info">
                     Page {page} of {totalPages}
                   </span>
+
                   <button
                     onClick={() => setPage(Math.min(totalPages, page + 1))}
                     disabled={page === totalPages}
