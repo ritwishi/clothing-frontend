@@ -4,7 +4,7 @@ const BASE_URL = import.meta.env.VITE_API_URL || "https://clothing-backend-hxe9.
 
 // axios instance for all api calls
 const api = axios.create({
-  baseURL: BASE_URL + "/api",   // base has /api
+  baseURL: BASE_URL + "/api",   // base already contains /api
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
@@ -12,7 +12,7 @@ const api = axios.create({
 });
 
 // ===============================
-// AUTH (DO NOT include /api here)
+// AUTH  (NO /api here)
 // ===============================
 export const registerUser = (data) => api.post("/auth/register", data);
 export const loginUser = (data) => api.post("/auth/login", data);
